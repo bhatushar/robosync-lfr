@@ -27,6 +27,7 @@ public:
 
     // Assign analog pin
     analogPin = analog;
+    pinMode(analogPin, INPUT);
 
     // Assigning weight to each sensor
     int even = !(MAX_SENSOR % 2); // Checking if total sensors are even or odd

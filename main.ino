@@ -6,7 +6,6 @@
 // Declaring global pins
   int motor_pins[] = {11,10,6,9}, // MotorL+, MotorL-, MotorR+, MotorR-
     lfr_dPins[] = {2, 3, 4, 5, 7, 8, 12, 13}, // Left to right
-    // TODO set pin number
     lfr_aPin = A5; // Analog input pin on LSA08
 
 // Global objects
@@ -23,9 +22,13 @@ void loop() {
   // Calculating error and voltage
   int deviation = lfr.calcDeviation();
   int volt = PID(abs(deviation - 35), lastDeviation);
+
+  Serial.print("Deviation: ");
+  Serial.println(deviation);
+  Serial.print("Volt: ");
+  Serial.println(volt);
   
   // Moving bot
-  // TODO check if left and right needs to be swapped 
   if(deviation < 35) {
     // Right
     Serial.println("Right");
@@ -44,4 +47,8 @@ void loop() {
 
   // Storing current deviation for future use
   lastDeviation = abs(deviation - 35);
+
+  // TODO comment this when moving the bot
+  delay(1000);
+
 }
