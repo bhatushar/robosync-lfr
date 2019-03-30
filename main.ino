@@ -38,5 +38,5 @@ void loop() {
   }
 
   // Storing current deviation for future use
-  lastDeviation = deviation;
+  lastDeviation = abs(deviation - 35);
 }
