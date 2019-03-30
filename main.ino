@@ -29,20 +29,26 @@ void loop() {
   Serial.println(volt);
   
   // Moving bot
-  if(deviation < 35) {
+  // TODO check if left and right need to be swapped
+  if(deviation <= 18) {
     // Right
     Serial.println("Right");
     motor.move('r', volt);
   }
-  else if(deviation > 35) {
+  else if(deviation <= 52) {
     // Left
     Serial.println("Left");
     motor.move('l', volt);
   }
-  else {
+  else if (deviation <= 70) {
     // Forward
+  if(deviation <= 35) {
     Serial.println("Forward");
     motor.move('f', stdVolt);
+  }
+  else {
+    Serial.println("Stopped");
+    motor.stop();
   }
 
   // Storing current deviation for future use

@@ -46,8 +46,10 @@ public:
     for (int i = 0; i < MAX_SENSOR; i++)
       sensor[i].val = digitalRead(sensor[i].pin);
 
-    // Return value read from analog pin
-    return analogRead(analogPin);
+    // Find line position
+    int readVal = analogRead(analogPin);
+    int positionVal = ((float)readVal/921)*70;
+    return positionVal;
   }
 
   int isCrossSection() {
