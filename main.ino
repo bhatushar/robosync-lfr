@@ -1,95 +1,42 @@
-/*
-  Arduino-Mega based line following robot with obstacle detection and color recognition.
-
-  Connections:
-  # IR array
-  | Pin | Connected to | Type |
-  | --- | ------------ | ---- |
-  |  1  |       52     | INPUT|
-  |  2  |       50     | INPUT|
-  |  3  |       48     | INPUT|
-  |  4  |       46     | INPUT|
-  |  5  |       44     | INPUT|
-  |  6  |       42     | INPUT|
-  |  7  |       40     | INPUT|
-  |  8  |       38     | INPUT|
-
-  # Motor driver
-  | Pin | Connected to | Type |
-  | --- | ------------ | ---- |
-  | OUT1|       4      |OUTPUT|
-  | OUT2|       5      |OUTPUT|
-  | OUT3|       2      |OUTPUT|
-  | OUT4|       3      |OUTPUT|
-
-  # IR sensor
-  | Pin | Connected to | Type |
-  | --- | ------------ | ---- |
-  | OUT |      32      | INPUT|
-
-  # Color sensor
-  | Pin | Connected to | Type |
-  | --- | ------------ | ---- |
-  | S2  |      51      |OUTPUT|
-  | S3  |      53      |OUTPUT|
-  | OUT |      49      | INPUT|
-
-  #RGB led
-  | Pin | Connected to | Type |
-  | --- | ------------ | ---- |
-  |  R  |      22      |OUTPUT|
-  |  G  |      24      |OUTPUT|
-  |  B  |      26      |OUTPUT|
-*/
-
 // Including required libraries
 #include "MotorDriver.h"
 #include "LineDetector.h"
 #include "PIDController.h"
 
-
-#define stdVolt 150
-
 // Declaring global pins
-int motorPins[] = {11,10,6,9}, // MotorL+, MotorL-, MotorR+, MotorR-
-    //colorPins[] = {51, 53, 49}, // S2, S3, OUT
-    lfrPins[] = {2, 3, 4, 5, 7, 8, 12, 13}; // Left to right
+  int motor_pins[] = {11,10,6,9}, // MotorL+, MotorL-, MotorR+, MotorR-
+    lfr_dPins[] = {2, 3, 4, 5, 7, 8, 12, 13}, // Left to right
+    // TODO set pin number
+    lfr_aPin = 10; // Analog input pin on LSA08
 
 // Global objects
-MotorDriver motor(motorPins);
-//ColorSensor cSensor(colorPins);
-LineDetector lfr(lfrPins);
+MotorDriver motor(motor_pins);
+LineDetector lfr(lfr_dPins, lfr_aPin);
 
-int lastDeviation = 0, // Variable to store deviation calculated in previous cycle
-    passedCross = 0; // Whether bot has passed a cross section
+int lastDeviation = 0; // Variable to store deviation calculated in previous cycle
 
-void setup(){
-  Serial.begin(9600);
-}
+void setup() {}
 
 void loop() {
   // Calculating error and voltage
   int deviation = lfr.calcDeviation();
-  int volt = PID(deviation, lastDeviation);
-  Serial.println(deviation);
-  /* Moving bot
-  if(deviation < 0) {
+  int volt = PID(abs(deviation - 35), lastDeviation);
+  
+  // Moving bot
+  // TODO check if left and right needs to be swapped 
+  if(deviation < 35) {
+    // Right
     motor.move('r', volt);
-    if (lfr.is90Turn())
-      delay(250);
-    //Serial.println("Right");
   }
-  else if(deviation > 0) {
+  else if(deviation > 35) {
+    // Left
     motor.move('l', volt);
-    if (lfr.is90Turn())
-      delay(250);
-    //Serial.println("Left");
   }
   else {
-    // Move forward
+    // Forward
     motor.move('f', stdVolt);
-    //Serial.println("Forward");
-  }*/
-  lastDeviation = deviation; // Storing current deviation for future use
-  delay(1000);
+  }
+
+  // Storing current deviation for future use
+  lastDeviation = deviation;
 }

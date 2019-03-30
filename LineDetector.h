@@ -12,10 +12,11 @@ struct IRSensor {
 class LineDetector {
 private:
   IRSensor sensor[MAX_SENSOR];
+  int analogPin;
   int zeroSensor, onSensor;
 
 public:
-  LineDetector(int pins[]) {
+  LineDetector(int pins[], int analog) {
     zeroSensor = 0;
 
     // Assigning pins to each sensor
@@ -23,6 +24,9 @@ public:
       sensor[i].pin = pins[i];
       pinMode(sensor[i].pin, INPUT);
     }
+
+    // Assign analog pin
+    analogPin = analog;
 
     // Assigning weight to each sensor
     int even = !(MAX_SENSOR % 2); // Checking if total sensors are even or odd
@@ -37,38 +41,12 @@ public:
   }
 
   int calcDeviation() {
-    bool lim_l = false, lim_h = false,
-      l_val, h_val;
-    int err = 0;
-    for (int l = MAX_SENSOR/2-1, h = MAX_SENSOR/2; l > -1 && h < MAX_SENSOR; l--, h++) {
-      l_val = digitalRead(sensor[l].pin);
-      h_val = digitalRead(sensor[h].pin);
-      if (l_val == HIGH) lim_l = true;
-      else if (lim_l == false)
-        err += sensor[l].weight;
-      
-      if (h_val == HIGH) lim_h = true;
-      else if (lim_h == false)
-        err += sensor[h].weight;
-    }
-    /*int motorPins[] = {4, 5, 2, 3};
-    MotorDriver motor(motorPins);
-    motor.stop();
-    delay(100);
-    int err = 0;
-    for(int i = 0; i < MAX_SENSOR; i++) {
-      int temp = sensor[i].weight;
+    // Read data from digital pins for future use
+    for (int i = 0; i < MAX_SENSOR; i++)
       sensor[i].val = digitalRead(sensor[i].pin);
-      if(sensor[i].val == LOW) {
-        // Current IR sensor is on the black strip
-        sensor[i].weight = 0;
-        zeroSensor++;
-      }
-      err += sensor[i].weight;
-      sensor[i].weight = temp;
-    }*/
 
-    return err;
+    // Return value read from analog pin
+    return analogRead(analogPin);
   }
 
   int isCrossSection() {

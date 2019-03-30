@@ -5,12 +5,11 @@
 #define RIGHT 1
 #define posPin 0
 #define negPin 1
-#define stdVolt 120
+#define stdVolt 50
 
 class MotorDriver {
 private:
-  int motor[2][2],
-      motorLag; // Balanced the rotational mis-match
+  int motor[2][2];
 
 public:
   MotorDriver(int out[]) {
@@ -21,7 +20,6 @@ public:
         motor[i][j] = out[k];
         pinMode(motor[i][j], OUTPUT);
       }
-    motorLag = 10; // In case of speed mis-match in two motors
   }
 
   void move(char direction, int voltage){
@@ -31,7 +29,7 @@ public:
     switch(direction) {
       case 'f':
         // Left motor rotates clockwise
-        analogWrite(motor[LEFT][posPin], voltage + motorLag);
+        analogWrite(motor[LEFT][posPin], voltage);
         analogWrite(motor[LEFT][negPin], 0);
         // Right motor rotates clockwise
         analogWrite(motor[RIGHT][posPin], voltage);
@@ -40,21 +38,13 @@ public:
       case 'b':
         // Left motor rotates anti-clockwise
         analogWrite(motor[LEFT][posPin], 0);
-        analogWrite(motor[LEFT][negPin], voltage + motorLag);
+        analogWrite(motor[LEFT][negPin], voltage);
         // Right motor rotates anti-clockwise
         analogWrite(motor[RIGHT][posPin], 0);
         analogWrite(motor[RIGHT][negPin], voltage);
         break;
       case 'r':
         // Left motor rotates clockwise
-        
-        //New concept for curves
-        //Left motor moves faster than the right one
-        /*analogWrite(motor[LEFT][posPin], stdVolt+voltage);
-        analogWrite(motor[LEFT][negPin], 0);
-        analogWrite(motor[RIGHT][negPin], 0);
-        analogWrite(motor[RIGHT][posPin], stdVolt);
-        */
         analogWrite(motor[LEFT][posPin], stdVolt+voltage);
         analogWrite(motor[LEFT][negPin], 0);
         // Right motor rotates anti-clockwise
@@ -63,12 +53,6 @@ public:
         
         break;
       case 'l':
-        /*
-        analogWrite(motor[RIGHT][posPin], stdVolt+voltage);
-        analogWrite(motor[RIGHT][negPin], 0);
-        analogWrite(motor[LEFT][negPin], 0);
-        analogWrite(motor[LEFT][posPin], stdVolt);
-        */
         // Left motor rotates anti-clockwise
         analogWrite(motor[LEFT][posPin], 0);
         analogWrite(motor[LEFT][negPin], stdVolt+voltage);
