@@ -52,6 +52,13 @@ public:
     return positionVal;
   }
 
+  int isOnWhite() {
+    for (int i = 0; i < MAX_SENSOR; i++)
+      if (sensor[i].val == LOW)
+        return 1;
+      return 0;
+  }
+
   int isCrossSection() {
     /*
     Function to check if the bot is at a cross section using the weight of the sensors
