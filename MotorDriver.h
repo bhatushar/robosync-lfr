@@ -5,7 +5,7 @@
 #define RIGHT 1
 #define posPin 0
 #define negPin 1
-#define stdVolt 50
+#define stdVolt 30
 
 class MotorDriver {
 private:

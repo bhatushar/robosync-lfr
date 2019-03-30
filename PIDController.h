@@ -5,7 +5,7 @@ float P, I, D;
 
 int PID(int err, int lastErr) {
   // TODO adjust kP
-  float kP = 0.8, 
+  float kP = 0.5, 
     kI = 0, 
     kD = 0;
   P = kP * err;
