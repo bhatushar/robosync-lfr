@@ -5,7 +5,7 @@
 #define RIGHT 1
 #define posPin 0
 #define negPin 1
-#define stdVolt 50
+#define stdVolt 150
 
 class MotorDriver {
 private:
@@ -22,12 +22,14 @@ public:
       }
   }
 
-  void move(char direction, int voltage){
+  void move(char direction, int voltage, bool slight = false){
     /*
     Function to move the bot in desired direction at given voltage
     */
+    int vLimU = (stdVolt+voltage >= 255) ? 255 : stdVolt+voltage;
+    int vLimL = (stdVolt-voltage <= 0) ? 0 : stdVolt-voltage;
     switch(direction) {
-      case 'f':
+      case 'b':
         // Left motor rotates clockwise
         analogWrite(motor[LEFT][posPin], voltage);
         analogWrite(motor[LEFT][negPin], 0);
@@ -35,7 +37,7 @@ public:
         analogWrite(motor[RIGHT][posPin], voltage);
         analogWrite(motor[RIGHT][negPin], 0);
         break;
-      case 'b':
+      case 'f':
         // Left motor rotates anti-clockwise
         analogWrite(motor[LEFT][posPin], 0);
         analogWrite(motor[LEFT][negPin], voltage);
@@ -43,23 +45,35 @@ public:
         analogWrite(motor[RIGHT][posPin], 0);
         analogWrite(motor[RIGHT][negPin], voltage);
         break;
-      case 'r':
-        // Left motor rotates clockwise
-        analogWrite(motor[LEFT][posPin], stdVolt+voltage);
-        analogWrite(motor[LEFT][negPin], 0);
-        // Right motor rotates anti-clockwise
-        analogWrite(motor[RIGHT][posPin], 0);
-        analogWrite(motor[RIGHT][negPin], stdVolt+voltage);
-        
-        break;
       case 'l':
-        // Left motor rotates anti-clockwise
+        // Right motor rotates forward
+        analogWrite(motor[RIGHT][posPin], 0);
+        analogWrite(motor[RIGHT][negPin], vLimU);
+
+        if (slight) {          
+          // Left motor rotates forward but slow
+          analogWrite(motor[LEFT][posPin], 0);
+          analogWrite(motor[LEFT][negPin], vLimL);
+        } else {
+          // Left motor rotates backward
+          analogWrite(motor[LEFT][posPin], vLimU);
+          analogWrite(motor[LEFT][negPin], 0);
+        }
+        break;
+      case 'r':        
+        // Left motor rotates forward
         analogWrite(motor[LEFT][posPin], 0);
-        analogWrite(motor[LEFT][negPin], stdVolt+voltage);
-        // Right motor rotates clockwise
-        analogWrite(motor[RIGHT][posPin], stdVolt+voltage);
-        analogWrite(motor[RIGHT][negPin], 0);
-        
+        analogWrite(motor[LEFT][negPin], vLimU);
+
+        if (slight) {          
+          // Right motor rotates forward but slow
+          analogWrite(motor[RIGHT][posPin], 0);
+          analogWrite(motor[RIGHT][negPin], vLimL);
+        } else {
+          // Right motor rotates backward
+          analogWrite(motor[RIGHT][posPin], vLimU);
+          analogWrite(motor[RIGHT][negPin], 0);
+        }
         break;
     }
   }

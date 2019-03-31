@@ -13,8 +13,6 @@
 MotorDriver motor(motor_pins);
 LineDetector lfr(lfr_dPins, lfr_aPin);
 
-int lastDeviation = 0; // Variable to store deviation calculated in previous cycle
-
 void setup() {
   Serial.begin(9600);
 }
@@ -22,34 +20,37 @@ void setup() {
 void loop() {
   // Calculating error and voltage
   int deviation = lfr.calcDeviation();
-  int volt = PID(abs(deviation - 35), lastDeviation);
+  int volt = PID(deviation);
 
-  Serial.print("Deviation: ");
+  /*Serial.print("Deviation: ");
   Serial.println(deviation);
+  //Serial.print(" ");
   Serial.print("Volt: ");
-  Serial.println(volt);
+  Serial.println(volt);*/
   
   // Moving bot
-  // TODO check if left and right needs to be swapped 
-  if(deviation < 35) {
+  if(deviation < 26) {
+    // Left
+    //Serial.println("Left");
+    motor.move('l', volt);
+  } else if (deviation < 32) {
+    // Slight Left
+    //Serial.println("Slight Left");
+    motor.move('l', volt, true);
+  } else if (deviation < 36) {
+    // Forward
+    //Serial.println("Forward");
+    motor.move('f', stdVolt);
+  } else if (deviation < 46) {
+    // Slight Right
+    //Serial.println("Slight Right");
+    motor.move('r', volt, true);
+  } else {
     // Right
-    Serial.println("Right");
+    //Serial.println("Right");
     motor.move('r', volt);
   }
-  else if(deviation > 35) {
-    // Left
-    Serial.println("Left");
-    motor.move('l', volt);
-  }
-  else {
-    // Forward
-    Serial.println("Forward");
-    motor.move('f', stdVolt);
-  }
 
-  // Storing current deviation for future use
-  lastDeviation = abs(deviation - 35);
-
-  // TODO comment this when moving the bot
-  
+  // TODO comment this when moving the bot*/
+  // delay(1000);
 }
