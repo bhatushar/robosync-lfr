@@ -78,6 +78,35 @@ public:
     }
   }
 
+  void turn90(char dir) {
+    switch (dir)
+    {
+      case 'l':
+        // Right forward
+        analogWrite(motor[RIGHT][negPin], stdVolt);
+        analogWrite(motor[RIGHT][posPin], 0);
+        // Left backward
+        analogWrite(motor[LEFT][negPin], stdVolt);
+        analogWrite(motor[LEFT][posPin], 0);
+        break;
+    
+      case 'r':
+        // Right backward
+        analogWrite(motor[RIGHT][posPin], stdVolt);
+        analogWrite(motor[RIGHT][negPin], 0);
+        // Left forward
+        analogWrite(motor[LEFT][posPin], stdVolt);
+        analogWrite(motor[LEFT][negPin], 0);
+        break;
+    }
+
+    // Time required to turn 90 deg at stdVolt
+    delay(300);
+
+    // Stop after turning
+    this->stop();
+  }
+
   void stop() {
     for(int i = 0; i < 2; i++)
       for(int j = 0; j < 2; j++)

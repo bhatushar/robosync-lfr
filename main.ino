@@ -6,7 +6,6 @@
 // Declaring global pins
   int motor_pins[] = {11,10,6,9}, // MotorL+, MotorL-, MotorR+, MotorR-
     lfr_dPins[] = {2, 3, 4, 5, 7, 8, 12, 13}, // Left to right
-    // TODO set pin number
     lfr_aPin = A5; // Analog input pin on LSA08
 
 // Global objects
@@ -29,10 +28,11 @@ void loop() {
   Serial.println(volt);*/
   
   // Moving bot
-  if(deviation < 26) {
+  if (deviation < 26) {
     // Left
     //Serial.println("Left");
-    motor.move('l', volt);
+    if (lfr.is90Turn()) motor.turn90('l');
+    else motor.move('l', volt);
   } else if (deviation < 32) {
     // Slight Left
     //Serial.println("Slight Left");
@@ -48,7 +48,8 @@ void loop() {
   } else {
     // Right
     //Serial.println("Right");
-    motor.move('r', volt);
+    if (lfr.is90Turn()) motor.turn90('r');
+    else motor.move('r', volt);
   }
 
   // TODO comment this when moving the bot*/
