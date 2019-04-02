@@ -5,8 +5,8 @@
 
 struct IRSensor {
   int pin,      // The pin to which the sensor is connected
-      weight,   // The weight assigned to each pin
-      val;
+      weight;   // The weight assigned to each pin
+  bool val;
 };
 
 class LineDetector {
@@ -52,28 +52,33 @@ public:
     return positionVal;
   }
 
-  bool is90Turn() {
-    /*int is90 = 1;
-    for(int i = 0; i < MAX_SENSOR/2; i++)
-      if (sensor[i].val == 1) {
-        is90 = 0;
+  bool isCrossSection() {
+    for (int i = 0; i < MAX_SENSOR; i++)
+      if (sensor[i].val == LOW)
+        return false;
+    return true;
+  }
+
+  bool is90Turn(char side) {
+    bool status = true;
+    switch(side) {
+      case 'l':
+        for (int i = 0; i < MAX_SENSOR/2; i++)
+          if (sensor[i].val == LOW) {
+            status = false;
+            break;
+          }
         break;
-      }
-    if (!is90)
-      for (int i = MAX_SENSOR/2; i < MAX_SENSOR; i++)
-        if (sensor[i].val == 1) {
-        is90 = 0;
+      case 'r':
+        for (int i = MAX_SENSOR/2; i < MAX_SENSOR; i++)
+          if (sensor[i].val == LOW) {
+            status = false;
+            break;
+          }
         break;
-      }
-    return is90;*/
-    int diff = 0, comm = 0;
-    for (int i = 0; i < 3; i++) {
-      if (sensor[i].val == sensor[MAX_SENSOR-i-1].val)
-        comm++;
-      else diff++;
+      default: status = false;
     }
-    return (diff > comm);
-    //return (sensor[0].val != sensor[MAX_SENSOR-1].val);
+    return status;
   }
 };
 

@@ -5,7 +5,8 @@
 #define RIGHT 1
 #define posPin 0
 #define negPin 1
-#define stdVolt 150
+#define stdVolt 100
+#define turnVolt 50
 
 class MotorDriver {
 private:
@@ -46,36 +47,51 @@ public:
         analogWrite(motor[RIGHT][negPin], voltage);
         break;
       case 'l':
-        // Right motor rotates forward
-        analogWrite(motor[RIGHT][posPin], 0);
-        analogWrite(motor[RIGHT][negPin], vLimU);
-
         if (slight) {          
+          // Right motor rotates forward
+          analogWrite(motor[RIGHT][posPin], 0);
+          analogWrite(motor[RIGHT][negPin], vLimU);
           // Left motor rotates forward but slow
           analogWrite(motor[LEFT][posPin], 0);
           analogWrite(motor[LEFT][negPin], vLimL);
         } else {
+          // Right motor rotates forward
+          analogWrite(motor[RIGHT][posPin], 0);
+          analogWrite(motor[RIGHT][negPin], turnVolt+voltage);
           // Left motor rotates backward
-          analogWrite(motor[LEFT][posPin], vLimU);
+          analogWrite(motor[LEFT][posPin], turnVolt+voltage);
           analogWrite(motor[LEFT][negPin], 0);
         }
         break;
-      case 'r':        
-        // Left motor rotates forward
-        analogWrite(motor[LEFT][posPin], 0);
-        analogWrite(motor[LEFT][negPin], vLimU);
-
-        if (slight) {          
+      case 'r':
+        if (slight) {
+          // Left motor rotates forward
+          analogWrite(motor[LEFT][posPin], 0);
+          analogWrite(motor[LEFT][negPin], vLimU);
           // Right motor rotates forward but slow
           analogWrite(motor[RIGHT][posPin], 0);
           analogWrite(motor[RIGHT][negPin], vLimL);
         } else {
+          // Left motor rotates forward
+          analogWrite(motor[LEFT][posPin], 0);
+          analogWrite(motor[LEFT][negPin], turnVolt+voltage);
           // Right motor rotates backward
-          analogWrite(motor[RIGHT][posPin], vLimU);
+          analogWrite(motor[RIGHT][posPin], turnVolt+voltage);
           analogWrite(motor[RIGHT][negPin], 0);
         }
         break;
     }
+  }
+
+  void turn90(char dir) {
+    //this->move('b', turnVolt);
+    //delay(150);
+    this->move(dir, 0);
+    // Time required to turn 90 deg at stdVolt
+    delay(250);
+
+    // Stop after turning
+    this->stop();
   }
 
   void stop() {

@@ -7,13 +7,13 @@ int lastErr = 0; // Variable to store deviation calculated in previous cycle
 int PID(int dev) {
   // TODO adjust kP
   float kP, kI, kD;
-  int err = abs(dev - 35);
-  if (25 < dev && dev < 45) {
+  int err = dev - 35;
+  if (20 < dev && dev < 50) {
     // Constants for low degree error
-    kP = 1.5; kI = 0; kD = 0;
+    kP = 1; kI = 0; kD = 0;
   } else {
     // Constants for high degree error
-    kP = 1; kI = 0; kD = 0;
+    kP = 0.3; kI = 0.0001; kD = 0.5;
   }
   //kP = 7; kI = 0; kD = 0;
   P = kP * err;
